@@ -6,7 +6,7 @@ An interpreter for the Brainfuck programming language
 
 ### 1. Clone the source
 ```sh
-$ git clone https://github.com/Sangeet-Parashar/bf.git
+$ git clone https://github.com/acidicity/bf.git
 $ cd bf
 ```
 
