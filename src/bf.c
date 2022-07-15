@@ -2,33 +2,36 @@
 #include <stdlib.h>
 #include <string.h>
 
-int loop[1024] = {0};
-int loop_size = 0;
+#define ARRAY_MAX_SIZE 30000
+
+int stack[1024] = {0};
+int stack_size = 0;
 
 static inline void push_back(int pos) {
-    if(loop_size + 1 > sizeof(loop)) {
+    if(stack_size + 1 > sizeof(stack)) {
         fprintf(stderr, "Error: Too many loops\n");
         exit(1);
     }
-    loop[loop_size++] = pos;
+
+    stack[stack_size++] = pos;
 }
 
 static inline int pop_back() {
-    if (loop_size - 1 < 0) {
-        fprintf(stderr, "Usage: Found unexpected end of loop\n");
+    if (stack_size - 1 < 0) {
+        fprintf(stderr, "Error: Found unexpected end of loop\n");
         exit(1);
     }
     
-    return loop[--loop_size];
+    return stack[--stack_size];
 }
 
-static inline int get_last() {
-    if (loop_size - 1 < 0) {
-        fprintf(stderr, "Usage: Found unexpected end of loop\n");
+static inline int get_last_element() {
+    if (stack_size - 1 < 0) {
+        fprintf(stderr, "Error: Found unexpected end of loop\n");
         exit(1);
     }
 
-    return loop[loop_size - 1];
+    return stack[stack_size - 1];
 }
 
 int main(int argc, char **argv) {
@@ -60,7 +63,7 @@ int main(int argc, char **argv) {
 
     source[bytes + 1] = '\0';
 
-    int array[30000] = {0};
+    int array[ARRAY_MAX_SIZE] = {0};
     int *dp = array;
     int pos = 0;
 
@@ -83,6 +86,8 @@ int main(int argc, char **argv) {
                 break;
             case '-':
                 (*dp)--;
+                if (*dp == -1)
+                    *dp = 255;
                 break;
             case ',':
                 *dp = getchar();
@@ -91,6 +96,7 @@ int main(int argc, char **argv) {
                 putchar(*dp);
                 break;
             case '[':
+                
                 if (*dp == 0)
                 {
                     while (ch != ']')
@@ -102,7 +108,7 @@ int main(int argc, char **argv) {
                 break;
             case ']':
                 if (*dp != 0)
-                    pos = get_last();
+                    pos = get_last_element();
                 else
                     pop_back();
                 
